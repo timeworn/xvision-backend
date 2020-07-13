@@ -14,7 +14,18 @@ import { DashboardModule } from './dashboard/dashboard.module';
   imports: [
     AuthModule,
     UsersModule,
-    TypeOrmModule.forRoot(),
+    TypeOrmModule.forRoot({
+      "type": "mysql",
+      "host": process.env.DB_HOST || "localhost",
+      "port": parseInt(process.env.DB_PORT) || 3306,
+      "username": process.env.DB_USER || "root",
+      "password": process.env.DB_PASSWORD || "",
+      "database": process.env.DB_NAME || "iot",
+      "entities": ["dist/**/*.entity{.ts,.js}"],
+      "synchronize": true,
+      "logging": true,
+      "logger": "file"
+}),
     GroupsModule,
     DevicesModule,
     DashboardModule
