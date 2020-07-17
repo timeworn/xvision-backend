@@ -1,17 +1,18 @@
-import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Request, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { GroupsService } from './groups.service';
 import { ApiBearerAuth, ApiOkResponse } from '@nestjs/swagger';
 import { GroupDto } from './dtos/group.dto';
 import { UsersService } from '../users/users.service';
+import { SuccessResponseDto } from '../common/dtos/success-response.dto';
 
 @Controller('groups')
 @UseGuards(JwtAuthGuard)
 export class GroupsController {
   constructor(
     private groupsService: GroupsService,
-    private userService: UsersService,
-    ) {
+    private userService: UsersService
+  ) {
   }
 
   @ApiBearerAuth()
@@ -33,4 +34,21 @@ export class GroupsController {
     return added.toDto();
   }
 
+  @Put(':id')
+  @ApiBearerAuth()
+  @ApiOkResponse({ type: GroupDto })
+  async update(@Param('id') id: number, @Body() body: GroupDto): Promise<GroupDto> {
+    let group = await this.groupsService.findById(body.id);
+    group.name = body.name;
+    group.note = body.note;
+    group = await this.groupsService.saveGroup(group);
+    return group.toDto();
+  }
+
+  @Delete(':id')
+  @ApiBearerAuth()
+  @ApiOkResponse({ type: SuccessResponseDto })
+  removeGroup(@Param('id') id: number): Promise<SuccessResponseDto> {
+    return this.groupsService.deleteById(id);
+  }
 }

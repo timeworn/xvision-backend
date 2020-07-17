@@ -4,6 +4,7 @@ import { Group } from './group.entity';
 import { Repository } from 'typeorm';
 import { User } from '../users/user.entity';
 import { GroupDto } from './dtos/group.dto';
+import { SuccessResponseDto } from '../common/dtos/success-response.dto';
 
 @Injectable()
 export class GroupsService {
@@ -35,5 +36,20 @@ export class GroupsService {
       .leftJoinAndSelect('groups.devices', 'devices')
       .where('user.id = :userId', { userId })
       .getMany();
+  }
+
+  async saveGroup(group: Group): Promise<Group> {
+    await this.groupsRepository.save(group);
+    return this.findById(group.id);
+  }
+
+  async deleteById(id: number): Promise<SuccessResponseDto> {
+    const group = await this.findById(id);
+    if (group) {
+      group.devices = [];
+      await this.saveGroup(group);
+      await this.groupsRepository.remove(group);
+    }
+    return new SuccessResponseDto();
   }
 }
