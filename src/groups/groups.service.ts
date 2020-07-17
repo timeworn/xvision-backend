@@ -32,10 +32,10 @@ export class GroupsService {
 
   async findByUserId(userId: number): Promise<Group[]> {
     return this.groupsRepository.createQueryBuilder('groups')
-      .leftJoinAndSelect('groups.user', 'user')
-      .leftJoinAndSelect('groups.devices', 'devices')
-      .where('user.id = :userId', { userId })
-      .getMany();
+    .leftJoinAndSelect('groups.user', 'user')
+    .leftJoinAndSelect('groups.devices', 'devices')
+    .where('user.id = :userId', { userId })
+    .getMany();
   }
 
   async saveGroup(group: Group): Promise<Group> {
@@ -48,7 +48,7 @@ export class GroupsService {
     if (group) {
       group.devices = [];
       await this.saveGroup(group);
-      await this.groupsRepository.remove(group);
+      await this.groupsRepository.softRemove(group);
     }
     return new SuccessResponseDto();
   }

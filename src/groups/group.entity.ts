@@ -1,13 +1,11 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { Device } from '../devices/device.entity';
 import { GroupDto } from './dtos/group.dto';
 import { User } from '../users/user.entity';
+import { SoftDelete } from '../common/core/soft-delete';
 
 @Entity('groups')
-export class Group {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class Group extends SoftDelete {
   @Column()
   name: string;
 
@@ -22,7 +20,7 @@ export class Group {
 
   toDto(): GroupDto {
     return {
-      id: this.id,
+      ...super.toDto(),
       name: this.name,
       note: this.note,
       devices: this.devices ? this.devices.map(device => device.toDto()) : []
