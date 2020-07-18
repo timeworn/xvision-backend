@@ -48,6 +48,9 @@ export class Device {
   @Column()
   settings: string;
 
+  @Column()
+  enable_warning: boolean;
+
   @ManyToOne(() => User, user => user.devices)
   user: User;
 
@@ -71,6 +74,8 @@ export class Device {
       battery: this.battery,
       name: this.name,
       settings: this.settings,
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      enable_warning: this.enable_warning,
       group: this.group
     };
   }

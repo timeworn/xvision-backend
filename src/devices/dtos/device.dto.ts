@@ -45,6 +45,9 @@ export class DeviceDto {
   @ApiProperty()
   settings: string;
 
+  @ApiProperty()
+  enable_warning: boolean;
+
   @ApiProperty({required: false})
   groupId?: number;
 
